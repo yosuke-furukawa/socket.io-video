@@ -33,6 +33,9 @@
     var buf = BinaryUtil.arrayBufferToBase64(data.data.blob);
     $('#'+data.id).attr("src", 'data:image/png;base64,' + buf);
   });
+  socket.on("leave", function(data){
+    $('#'+data.id).remove();
+  });
   video.addEventListener('timeupdate', function(e){
     snapshot();
   });

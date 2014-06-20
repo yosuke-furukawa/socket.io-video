@@ -18,5 +18,10 @@ io.on('connection', function(socket){
       data: data
     });
   });
+  socket.on("disconnect", function(){
+    socket.broadcast.emit("leave", {
+      id: socket.id
+    });
+  });
 });
 server.listen(3000);
