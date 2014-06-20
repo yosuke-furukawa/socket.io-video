@@ -1,15 +1,22 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var http = require('http');
 var server = http.Server(app);
 var io = require('socket.io')(server);
-var fs = require('fs');
-app.get('/', function(req, res) {
-  fs.createReadStream("./index.html").pipe(res);
-});
+var users = {};
+app.use(express.static(__dirname + "/public"));
 io.on('connection', function(socket){
+  socket.on('join', function(data){
+    if (!users[socket.id]) {
+      users[socket.id] = true;
+      io.emit('join', users);
+    }
+  });
   socket.on('event', function(data){
-    console.log(data);
-    socket.broadcast.emit('event', data);
+    socket.broadcast.emit('event', {
+      id: socket.id,
+      data: data
+    });
   });
 });
 server.listen(3000);

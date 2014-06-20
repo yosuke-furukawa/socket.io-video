@@ -1,0 +1,50 @@
+<body> 
+  <video id='video' autoplay width="640" height="480"></video>
+  <canvas style="display:none;" width="640" height="480"></canvas>
+  <div id="body"></div>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/binaryUtil.js"></script>
+<script src="/js/userMedia.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+  var video = document.querySelector('#video');
+  var canvas = document.querySelector('canvas');
+  var ctx = canvas.getContext('2d');
+  var localMediaStream = null;
+  var socket = io();
+  var snapshot = function() {
+    if (localMediaStream) {
+      ctx.drawImage(video, 0, 0);
+      var img = canvas.toDataURL('image/webp');
+      var blob = BinaryUtil.base64ToBlob(img);
+      socket.emit("event", {blob:blob});
+    }
+  };
+  socket.on("join", function(data){
+    console.log(Object.keys(data));
+    Object.keys(data).forEach(function(id){
+      console.log("id", id);
+      $("#body").append('<img id="'+ id +'" />');
+    });
+  });
+  socket.on("event", function(data){
+    console.log(data.id);
+    var buf = BinaryUtil.arrayBufferToBase64(data.data.blob);
+    $('#'+data.id).attr("src", 'data:image/png;base64,' + buf);
+  });
+  video.addEventListener('timeupdate', function(e){
+    snapshot();
+  });
+  UserMedia.check();
+  UserMedia.onSuccess = function(stream) {
+    video.src = window.URL.createObjectURL(stream);
+    localMediaStream = stream;
+    snapshot();
+  };
+  UserMedia.onError = function(e) {
+    console.log("Error ", e);
+  };
+  UserMedia.play();
+  socket.emit("join");
+</script>
