@@ -7,7 +7,7 @@
   var snapshot = function() {
     if (localMediaStream) {
       ctx.drawImage(video, 0, 0);
-      var img = canvas.toDataURL('image/png');
+      var img = canvas.toDataURL('image/webp');
       var blob = BinaryUtil.base64ToBinary(img);
       socket.emit("image", blob);
     }
@@ -17,7 +17,7 @@
     if ($('#'+data.id).size() == 0) {
       $("#body").append('<img id="'+ data.id +'" />');
     }
-    $('#'+data.id).attr("src", 'data:image/png;' + buf);
+    $('#'+data.id).attr("src", 'data:image/webp;' + buf);
   });
   socket.on("leave", function(data){
     $('#'+data.id).remove();
