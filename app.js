@@ -3,19 +3,18 @@ var app = express();
 var http = require('http');
 var server = http.Server(app);
 var io = require('socket.io')(server);
-var users = {};
+var users_key = 'users';
+var sioredis = require('socket.io-redis');
+io.adapter(sioredis({ 
+  host: 'localhost', 
+  port: 6379,
+}));
 app.use(express.static(__dirname + "/public"));
 io.on('connection', function(socket){
-  socket.on('join', function(data){
-    if (!users[socket.id]) {
-      users[socket.id] = true;
-      io.emit('join', users);
-    }
-  });
-  socket.on('event', function(data){
-    socket.broadcast.emit('event', {
+  socket.on('image', function(data){
+    socket.broadcast.volatile.emit('image', {
       id: socket.id,
-      data: data
+      blob: data
     });
   });
   socket.on("disconnect", function(){
@@ -24,4 +23,4 @@ io.on('connection', function(socket){
     });
   });
 });
-server.listen(3000);
+server.listen(process.env.PORT || 3000);

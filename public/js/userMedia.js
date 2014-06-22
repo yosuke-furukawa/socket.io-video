@@ -8,7 +8,7 @@
     }
   };
 
-  UserMedia.URL = window.URL || window.webkitURL;
+  window.URL = window.URL || window.webkitURL;
   UserMedia.onSuccess = null;
   UserMedia.onError = null;
 
@@ -19,7 +19,14 @@
     if (!UserMedia.onError) {
       console.error("Please set UserMedia.onError function");
     }
-    navigator.getUserMedia({video: true}, UserMedia.onSuccess, UserMedia.onError);
+    navigator.getUserMedia({
+      video: {
+        mandatory: {
+          maxWidth: 320,
+          maxHeight: 240
+        }
+      }
+    }, UserMedia.onSuccess, UserMedia.onError);
   };
 
   window.UserMedia = UserMedia;

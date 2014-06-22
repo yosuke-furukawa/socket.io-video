@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "PORT=6000 node app.js & PORT=6001 node app.js & PORT=6002 node app.js & PORT=6003 node app.js"
   },
   "author": "",
   "license": "ISC",
