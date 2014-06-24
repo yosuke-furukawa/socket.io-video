@@ -16,4 +16,4 @@ $ node app.js
 Lauch your webcam and use chrome browser.
 
 
-![img](https://i.cloudup.com/Nj2E-YD-z4-3000x3000.jpeg)
+<img src="https://i.cloudup.com/Nj2E-YD-z4-3000x3000.jpeg" width=40% height=40% />
